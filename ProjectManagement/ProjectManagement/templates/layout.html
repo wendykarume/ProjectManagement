@@ -1,0 +1,65 @@
+<!doctype html>
+{% extends "bootstrap/base.html" %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>{% block title %} Project Management System {% endblock %}</title>
+
+    <!-- favicon.ico -->
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+</head>
+
+<body>
+{% block content %}
+{{super()}}
+<div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('welcome')}}">Project Management System</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    {% block nav %}
+                    <li><a href="{{ url_for('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    <li><a href="{{ url_for('signup') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
+                    </li>
+                    {% endblock %}
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+</div>
+<br>
+<br>
+<div style="text-align: center;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible text-center" role="alert" style="text-align: center;">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <!-- <strong>Title</strong> --> {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "layout.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='signin.css')}}">
+{% endblock %}
+
+{% block nav %}
+<li><a href="{{ url_for('reports') }}"><span class="glyphicon glyphicon-file"></span> Reports</a></li>
+<li><a href="{{ url_for('statistics') }}"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
+<li><a href="{{ url_for('chats') }}"><span class="glyphicon glyphicon-comment"></span> Chats</a></li>
+<li><a href="{{ url_for('calendar') }}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
+<li><a href="{{ url_for('register') }}">New Project</a></li>
+<p class="navbar-text">{{ current_user.email }}</p>
+<li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+
+{% block content %}
+{{super()}}
+
+<br/>
+<br/>
+<table class="table table-hover table-striped table-responsive">
+    <thead>
+    <tr>
+        <th scope="col">Project Name</th>
+        <th scope="col">Start Date</th>
+        <th scope="col">End Date</th>
+        <th scope="col">Team Number</th>
+        <th scope="col">Project Type</th>
+        <th scope="col">Organization</th>
+        <th scope="col">Status</th>
+    </tr>
+    </thead>
+
+    {% for result in results%}
+    <tr>
+        <td>{{ result.project_name }}</td>
+        <td>{{ result.start_date }}</td>
+        <td>{{ result.end_date }}</td>
+        <td>{{ result.team_no }}</td>
+        <td>{{ result.project_type }}</td>
+        <td>{{ result.organization }}</td>
+        <td>{{ result.status }}</td>
+        <td><a class="btn btn-primary" href=" {{url_for('edit', project_id=result.id)}} " role="button">Edit</a></td>
+        <td><a class="btn btn-danger" href=" {{url_for('delete', project_id=result.id)}} " role="button">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% extends "layout.html" %}
+
+{% block title %} Edit Project {% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('.static', filename='signin.css')}}">
+{% endblock %}
+
+{% block nav %}
+<li><a href="{{ url_for('register') }}">Add New</a></li>
+<li><a href="{{ url_for('dashboard') }}">View</a></li>
+<p class="navbar-text">{{ current_user.email }}</p>
+<li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+{% endblock %}
+
+{% block content %}
+{{super()}}
+<div class="container">
+    <form class="form-signin" method="POST" action="{{url_for('edit', project_id=project_id)}}">
+        <h2 class="form-signin-heading">Update Project</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.project_name) }}
+        {{ wtf.form_field(form.start_date) }}
+        {{ wtf.form_field(form.end_date) }}
+        {{ wtf.form_field(form.team_no) }}
+        {{ wtf.form_field(form.project_type) }}
+        {{ wtf.form_field(form.organization) }}
+        {{ wtf.form_field(form.status) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Edit</button>
+    </form>
+</div>
+{% endblock %}
