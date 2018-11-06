@@ -2,9 +2,11 @@ from flask import render_template, redirect, url_for, flash, send_from_directory
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 import os
-from ProjectManagement.models import User, Register
+from datetime import datetime
+import pytz
+from ProjectManagement.models import User, Projects
 from ProjectManagement import app, db
-from ProjectManagement.form import LoginForm, SignupForm, RegisterForm, UpdateForm
+from ProjectManagement.form import LoginForm, SignupForm, ProjectForm, UpdateForm
 
 
 @app.route('/')
@@ -49,18 +51,24 @@ def login():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    results = db.session.query(Register).filter_by(email=current_user.email)
+    results = db.session.query(Projects).filter_by(active=True, email=current_user.email)
     return render_template('dashboard.html', results=results)
 
 
 @app.route('/project/new', methods=['GET', 'POST'])
 @login_required
 def register():
-    form = RegisterForm()
+    form = ProjectForm()
     if form.validate_on_submit():
-        project = Register(project_name=form.project_name.data, start_date=form.start_date.data,
+        d = datetime.now()
+        timezone = pytz.timezone("Africa/Nairobi")
+        d_aware = timezone.localize(d)
+
+        project = Projects(project_name=form.project_name.data, start_date=form.start_date.data,
                            end_date=form.end_date.data, team_no=form.team_no.data, project_type=form.project_type.data,
                            organization=form.organization.data)
+        project.start_date = d_aware.strftime("%B %d, %Y")
+        project.end_date = d_aware.strftime("%B %d, %Y")
         project.email = current_user.email
         db.session.add(project)
         db.session.commit()
@@ -72,7 +80,7 @@ def register():
 @app.route('/project/edit/<int:project_id>', methods=['POST', 'GET'])
 @login_required
 def edit(project_id):
-    project = Register.query.filter_by(id=project_id).first()
+    project = Projects.query.filter_by(id=project_id).first()
     form = UpdateForm()
     if form.validate_on_submit():
         name = project.project_name
@@ -94,9 +102,10 @@ def edit(project_id):
 @app.route('/project/delete/<int:project_id>')
 @login_required
 def delete(project_id):
-    project = Register.query.filter_by(id=project_id).first()
+    project = Projects.query.filter_by(id=project_id).first()
     name = project.project_name
-    db.session.delete(project)
+    project.active = False
+    db.session.add(project)
     db.session.commit()
     flash("You have successfully deleted project: " + name, category='danger')
     return redirect(url_for('dashboard'))

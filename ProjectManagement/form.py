@@ -1,7 +1,18 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from wtforms.fields.html5 import DateField
+from datetime import datetime
+from datetime import date
+
+from ProjectManagement.models import User
+
+
+def calculate_duration(dt):
+    birth = datetime.strptime(dt, '%Y-%m-%d')
+    today = date.today()
+    print(float(today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))), )
+    return today.year - birth.year - ((today.month, today.day) < (birth.month, birth.day))
 
 
 class SignupForm(FlaskForm):
@@ -18,6 +29,26 @@ class SignupForm(FlaskForm):
     confirm_password = PasswordField("Repeat Password", [DataRequired(message="Confirm Password"),
                                                          EqualTo('password', message='Passwords must match')])
 
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('Email address already exists')
+
+    def validate_first_name(self, first_name):
+        if not str(first_name):
+            raise ValidationError('No special characters eg.(@, #, [space]) allowed, only letters')
+
+    def validate_surname(self, surname):
+        if not str(surname):
+            raise ValidationError('No special characters eg.(@, #, [space]) allowed, only letters')
+
+    def validate_duration(self, dob):
+        form = ProjectForm()
+        if calculate_duration(str(form.dob.data)) < 18:
+            raise ValidationError('Invalid date of birth, age is less than 18 years')
+        if calculate_duration(str(form.dob.data)) > 120:
+            raise ValidationError('Invalid date of birth, age more than 120 years')
+
 
 class LoginForm(FlaskForm):
     email = StringField("Email", [DataRequired(message="Email Address required"),
@@ -26,7 +57,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField("Remember me")
 
 
-class RegisterForm(FlaskForm):
+class ProjectForm(FlaskForm):
     project_name = StringField("Project Name", [DataRequired(message="Kindly input your project name")])
     start_date = DateField("Start Date", [DataRequired(message="Kindly input your start date")])
     end_date = DateField("End Date", [DataRequired(message="Kindly input your end date")])

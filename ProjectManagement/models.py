@@ -23,8 +23,8 @@ class User(UserMixin, db.Model):
         self.password = password
 
 
-class Register(db.Model):
-    __tablename__ = 'Register'
+class Projects(db.Model):
+    __tablename__ = 'Projects'
 
     id = db.Column(db.Integer, primary_key=True)
     project_name = db.Column(db.String)
@@ -35,6 +35,7 @@ class Register(db.Model):
     project_type = db.Column(db.String)
     organization = db.Column(db.String)
     status = db.Column(db.String, default="Incomplete")
+    active = db.Column(db.Boolean, default=True)
 
     def __init__(self, project_name, start_date, end_date, team_no, project_type, organization):
         self.project_name = project_name

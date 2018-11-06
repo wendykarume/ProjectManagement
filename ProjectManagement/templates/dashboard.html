@@ -9,11 +9,11 @@
 {% endblock %}
 
 {% block nav %}
-<li><a href="{{ url_for('reports') }}"><span class="glyphicon glyphicon-file"></span> Reports</a></li>
-<li><a href="{{ url_for('statistics') }}"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
-<li><a href="{{ url_for('chats') }}"><span class="glyphicon glyphicon-comment"></span> Chats</a></li>
+<li><a href="{{ url_for('register') }}"><span class="glyphicon glyphicon-plus"></span> New Project</a></li>
 <li><a href="{{ url_for('calendar') }}"><span class="glyphicon glyphicon-calendar"></span> Calendar</a></li>
-<li><a href="{{ url_for('register') }}">New Project</a></li>
+<li><a href="{{ url_for('chats') }}"><span class="glyphicon glyphicon-comment"></span> Chats</a></li>
+<li><a href="{{ url_for('statistics') }}"><span class="glyphicon glyphicon-stats"></span> Statistics</a></li>
+<li><a href="{{ url_for('reports') }}"><span class="glyphicon glyphicon-file"></span> Reports</a></li>
 <p class="navbar-text">{{ current_user.email }}</p>
 <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 {% endblock %}
